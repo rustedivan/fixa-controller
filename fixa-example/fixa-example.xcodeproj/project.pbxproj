@@ -1,0 +1,374 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		14E38DEC250AB0E800170821 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E38DEB250AB0E800170821 /* AppDelegate.swift */; };
+		14E38DEE250AB0E800170821 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E38DED250AB0E800170821 /* SceneDelegate.swift */; };
+		14E38DF0250AB0E800170821 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E38DEF250AB0E800170821 /* ContentView.swift */; };
+		14E38DF2250AB0E900170821 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E38DF1250AB0E900170821 /* Assets.xcassets */; };
+		14E38DF5250AB0E900170821 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E38DF4250AB0E900170821 /* Preview Assets.xcassets */; };
+		14E38DF8250AB0E900170821 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14E38DF6250AB0E900170821 /* LaunchScreen.storyboard */; };
+		14E38E04250AB33300170821 /* fixa in Frameworks */ = {isa = PBXBuildFile; productRef = 14E38E03250AB33300170821 /* fixa */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		14E38DE8250AB0E800170821 /* fixa-example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "fixa-example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14E38DEB250AB0E800170821 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		14E38DED250AB0E800170821 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		14E38DEF250AB0E800170821 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		14E38DF1250AB0E900170821 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		14E38DF4250AB0E900170821 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		14E38DF7250AB0E900170821 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		14E38DF9250AB0E900170821 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		14E38DE5250AB0E800170821 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14E38E04250AB33300170821 /* fixa in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		14E38DDF250AB0E800170821 = {
+			isa = PBXGroup;
+			children = (
+				14E38DEA250AB0E800170821 /* fixa-example */,
+				14E38DE9250AB0E800170821 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		14E38DE9250AB0E800170821 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				14E38DE8250AB0E800170821 /* fixa-example.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		14E38DEA250AB0E800170821 /* fixa-example */ = {
+			isa = PBXGroup;
+			children = (
+				14E38DEB250AB0E800170821 /* AppDelegate.swift */,
+				14E38DED250AB0E800170821 /* SceneDelegate.swift */,
+				14E38DEF250AB0E800170821 /* ContentView.swift */,
+				14E38DF1250AB0E900170821 /* Assets.xcassets */,
+				14E38DF6250AB0E900170821 /* LaunchScreen.storyboard */,
+				14E38DF9250AB0E900170821 /* Info.plist */,
+				14E38DF3250AB0E900170821 /* Preview Content */,
+			);
+			path = "fixa-example";
+			sourceTree = "<group>";
+		};
+		14E38DF3250AB0E900170821 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				14E38DF4250AB0E900170821 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		14E38DE7250AB0E800170821 /* fixa-example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 14E38DFC250AB0E900170821 /* Build configuration list for PBXNativeTarget "fixa-example" */;
+			buildPhases = (
+				14E38DE4250AB0E800170821 /* Sources */,
+				14E38DE5250AB0E800170821 /* Frameworks */,
+				14E38DE6250AB0E800170821 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fixa-example";
+			packageProductDependencies = (
+				14E38E03250AB33300170821 /* fixa */,
+			);
+			productName = "fixa-example";
+			productReference = 14E38DE8250AB0E800170821 /* fixa-example.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		14E38DE0250AB0E800170821 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1170;
+				LastUpgradeCheck = 1170;
+				ORGANIZATIONNAME = "Ivan Milles";
+				TargetAttributes = {
+					14E38DE7250AB0E800170821 = {
+						CreatedOnToolsVersion = 11.7;
+					};
+				};
+			};
+			buildConfigurationList = 14E38DE3250AB0E800170821 /* Build configuration list for PBXProject "fixa-example" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 14E38DDF250AB0E800170821;
+			packageReferences = (
+				14E38E02250AB33300170821 /* XCRemoteSwiftPackageReference "fixa" */,
+			);
+			productRefGroup = 14E38DE9250AB0E800170821 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				14E38DE7250AB0E800170821 /* fixa-example */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		14E38DE6250AB0E800170821 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14E38DF8250AB0E900170821 /* LaunchScreen.storyboard in Resources */,
+				14E38DF5250AB0E900170821 /* Preview Assets.xcassets in Resources */,
+				14E38DF2250AB0E900170821 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		14E38DE4250AB0E800170821 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14E38DEC250AB0E800170821 /* AppDelegate.swift in Sources */,
+				14E38DEE250AB0E800170821 /* SceneDelegate.swift in Sources */,
+				14E38DF0250AB0E800170821 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		14E38DF6250AB0E900170821 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				14E38DF7250AB0E900170821 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		14E38DFA250AB0E900170821 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		14E38DFB250AB0E900170821 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		14E38DFD250AB0E900170821 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"fixa-example/Preview Content\"";
+				DEVELOPMENT_TEAM = Y4JDRD37Q9;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "fixa-example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.fixa-example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		14E38DFE250AB0E900170821 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"fixa-example/Preview Content\"";
+				DEVELOPMENT_TEAM = Y4JDRD37Q9;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "fixa-example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.fixa-example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		14E38DE3250AB0E800170821 /* Build configuration list for PBXProject "fixa-example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				14E38DFA250AB0E900170821 /* Debug */,
+				14E38DFB250AB0E900170821 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		14E38DFC250AB0E900170821 /* Build configuration list for PBXNativeTarget "fixa-example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				14E38DFD250AB0E900170821 /* Debug */,
+				14E38DFE250AB0E900170821 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		14E38E02250AB33300170821 /* XCRemoteSwiftPackageReference "fixa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rustedivan/fixa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		14E38E03250AB33300170821 /* fixa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14E38E02250AB33300170821 /* XCRemoteSwiftPackageReference "fixa" */;
+			productName = fixa;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 14E38DE0250AB0E800170821 /* Project object */;
+}

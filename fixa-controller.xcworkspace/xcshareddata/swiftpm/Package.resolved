@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "fixa",
+        "repositoryURL": "https://github.com/rustedivan/fixa.git",
+        "state": {
+          "branch": null,
+          "revision": "f1336cc3920e452076cd6556156521f2f82f1b3c",
+          "version": "0.1.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
