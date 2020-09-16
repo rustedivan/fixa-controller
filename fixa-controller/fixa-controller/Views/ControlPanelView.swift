@@ -96,8 +96,6 @@ struct ControlPanelView: View {
 				controller = AnyView(FixableSlider(value: binding, label: name, min: min, max: max))
 			case .divider:
 				controller = AnyView(Text(name).font(.headline))
-			case .none:
-				controller = AnyView(Text(name))
 		}
 		
 		return AnyView(
