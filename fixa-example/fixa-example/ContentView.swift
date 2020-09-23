@@ -14,6 +14,7 @@ struct ContentView: View {
 		Image(systemName: Bool(envelopeState.open) ? "envelope.open.fill" : "envelope.fill")
 			.font(.system(size: CGFloat(Float(envelopeState.size))))
 			.rotationEffect(Angle(degrees: Double(Float(envelopeState.angle))))
+			.foregroundColor(Color(UIColor(cgColor: envelopeState.color.value)))
 	}
 }
 

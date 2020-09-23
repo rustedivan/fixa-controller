@@ -11,7 +11,7 @@ import SwiftUI
 import fixa
 
 ///////////////////
-// $ Until XCode 12
+// $ Until SwiftUI improves
 // SwiftUI cannot yet create ActivityIndicator, and Slider config support is too weak.
 ///////////////////
 
@@ -27,6 +27,36 @@ struct ActivityIndicator: NSViewRepresentable {
 	}
 	
 	func updateNSView(_ nsView: NSProgressIndicator, context: Context) {
+	}
+}
+
+struct ColorWell: NSViewRepresentable {
+	class Coordinator: NSObject {
+		@Binding var value: CGColor
+		init(value: Binding<CGColor>) {
+			self._value = value
+		}
+		@objc func valueChanged(_ sender: NSColorWell) {
+			self.value = sender.color.cgColor
+		}
+	}
+	
+	@Binding var value: CGColor
+	typealias NSViewType = NSColorWell
+	
+	func makeCoordinator() -> Coordinator {
+		return Coordinator(value: $value)
+	}
+	
+	func makeNSView(context: Context) -> NSColorWell {
+		let view = NSColorWell()
+		view.target = context.coordinator
+		view.action = #selector(Coordinator.valueChanged(_:))
+		return view
+	}
+	
+	func updateNSView(_ nsView: NSColorWell, context: Context) {
+		nsView.color = NSColor(cgColor: value)!
 	}
 }
 
@@ -94,6 +124,9 @@ struct ControlPanelView: View {
 			case .float(_, let min, let max, _):
 				let binding = self.clientState.fixableFloatBinding(for: name)
 				controller = AnyView(FixableSlider(value: binding, label: name, min: min, max: max))
+			case .color:
+				let binding = self.clientState.fixableColorBinding(for: name)
+				controller = AnyView(FixableColorWell(value: binding, label: name))
 			case .divider:
 				controller = AnyView(Text(name).font(.headline))
 		}
@@ -145,6 +178,19 @@ struct FixableSlider: View {
 	}
 }
 
+struct FixableColorWell: View {
+	@Binding var value: CGColor
+	let label: String
+	
+	var body: some View {
+		HStack{
+			Text(label)
+			ColorWell(value: $value).frame(width: 24.0, height: 24.0)
+			Spacer()
+		}
+	}
+}
+
 struct ControlPanelView_Previews: PreviewProvider {
     static var previews: some View {
 			let previewState = ControllerState()
@@ -154,7 +200,8 @@ struct ControlPanelView_Previews: PreviewProvider {
 				"Header" : .divider(order: 0),
 				"Slider 1" : .float(value: 0.5, min: 0.25, max: 1.0, order: 3),
 				"Slider 2" : .float(value: 90.0, min: 0.0, max: 360.55, order: 2),
-				"Toggle" : .bool(value: true, order: 1)
+				"Toggle" : .bool(value: true, order: 1),
+				"Color" : .color(value: .black, order: 5)
 			]
 			return ControlPanelView(clientState: previewState)
 				.frame(width: 450.0, height: 600.0)

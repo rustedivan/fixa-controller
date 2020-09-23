@@ -55,6 +55,19 @@ class ControllerState: ObservableObject {
 				self.fixableValues[key] = .float(value: $0, min: min, max: max, order: order)
 			})
 	}
+	
+	func fixableColorBinding(for key: String) -> Binding<CGColor> {
+		return .init(
+			get: {
+				guard case let .color(value, _) = self.fixableValues[key] else { return .black }
+				return value
+			},
+			set: {
+				guard case .color(_, let order) = self.fixableValues[key] else { return }
+				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
+				self.fixableValues[key] = .color(value: $0, order: order)
+			})
+	}
 }
 
 class FixaController: FixaProtocolDelegate {

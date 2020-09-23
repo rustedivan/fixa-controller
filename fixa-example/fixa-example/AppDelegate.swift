@@ -8,6 +8,7 @@
 
 import UIKit
 import Combine
+import CoreGraphics.CGColor
 
 import fixa
 
@@ -16,21 +17,25 @@ struct AppFixables {
 	static let size = FixableSetup("Envelope size", config: .float(value: 50.0, min: 10.0, max: 150.0))
 	static let angle = FixableSetup("Envelope angle", config: .float(value: 0.0, min: -180.0, max: 180.0))
 	static let open = FixableSetup("Letter read", config: .bool(value: false))
+	static let color = FixableSetup("Letter color", config: .color(value: UIColor.blue.cgColor))
 }
 
 class VisualEnvelope: ObservableObject {
 	@Published var size = FixableFloat(AppFixables.size)		// % Wrap the variable instances by type and name
 	@Published var angle = FixableFloat(AppFixables.angle)
 	@Published var open = FixableBool(AppFixables.open)
+	@Published var color = FixableColor(AppFixables.color)
 	var sizeSubject: AnyCancellable? = nil
 	var angleSubject: AnyCancellable? = nil
 	var openSubject: AnyCancellable? = nil
+	var colorSubject: AnyCancellable? = nil
 	
 	init() {
 		// $ Future: assign(to: self.objectWillChange)
 		sizeSubject = size.newValues.sink { _ in self.objectWillChange.send() }
 		angleSubject = angle.newValues.sink { _ in self.objectWillChange.send() }
 		openSubject = open.newValues.sink { _ in self.objectWillChange.send() }
+		colorSubject = color.newValues.sink { _ in self.objectWillChange.send() }
 	}
 }
 
@@ -42,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FixableSetup("Tweaks", config: .divider()),
 		AppFixables.size,
 		AppFixables.angle,
+		AppFixables.color,
 		FixableSetup("Controls", config: .divider()),
 		AppFixables.open
 	])
