@@ -37,9 +37,9 @@ class ControllerState: ObservableObject {
 				return value
 			},
 			set: {
-				guard case let .bool(_, i) = bound else { return }
+				guard case let .bool(_, display) = bound else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .bool(value: $0, order: i)
+				self.fixableValues[key] = .bool(value: $0, display: display)
 			})
 	}
 	
@@ -50,9 +50,9 @@ class ControllerState: ObservableObject {
 				return value
 			},
 			set: {
-				guard case .float(_, let min, let max, let order) = self.fixableValues[key] else { return }
+				guard case .float(_, let min, let max, let display) = self.fixableValues[key] else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .float(value: $0, min: min, max: max, order: order)
+				self.fixableValues[key] = .float(value: $0, min: min, max: max, display: display)
 			})
 	}
 	
@@ -63,9 +63,9 @@ class ControllerState: ObservableObject {
 				return value
 			},
 			set: {
-				guard case .color(_, let order) = self.fixableValues[key] else { return }
+				guard case .color(_, let display) = self.fixableValues[key] else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .color(value: $0, order: order)
+				self.fixableValues[key] = .color(value: $0, display: display)
 			})
 	}
 }

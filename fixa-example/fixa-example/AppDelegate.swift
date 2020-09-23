@@ -14,10 +14,10 @@ import fixa
 
 // % Declare the set of fixable values
 struct AppFixables {
-	static let size = FixableSetup("Envelope size", config: .float(value: 50.0, min: 10.0, max: 150.0))
-	static let angle = FixableSetup("Envelope angle", config: .float(value: 0.0, min: -180.0, max: 180.0))
-	static let open = FixableSetup("Letter read", config: .bool(value: false))
-	static let color = FixableSetup("Letter color", config: .color(value: UIColor.blue.cgColor))
+	static let size = FixableSetup("Envelope size", config: .float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size")))
+	static let angle = FixableSetup("Envelope angle", config: .float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle")))
+	static let open = FixableSetup("Letter read", config: .bool(value: false, display: FixableDisplay("Letter read")))
+	static let color = FixableSetup("Letter color", config: .color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color")))
 }
 
 class VisualEnvelope: ObservableObject {
@@ -44,11 +44,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var envelope: VisualEnvelope?
 	
 	var fixaStream = FixaStream(fixableSetups: [
-		FixableSetup("Tweaks", config: .divider()),
+		FixableSetup("Tweaks", config: .divider(display: FixableDisplay("Tweaks"))),
 		AppFixables.size,
 		AppFixables.angle,
 		AppFixables.color,
-		FixableSetup("Controls", config: .divider()),
+		FixableSetup("Controls", config: .divider(display: FixableDisplay("Controls"))),
 		AppFixables.open
 	])
 		

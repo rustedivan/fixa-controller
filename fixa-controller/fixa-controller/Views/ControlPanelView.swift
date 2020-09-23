@@ -106,7 +106,7 @@ struct ControlPanelView: View {
 				// $ This is terrible until XC12
 				ForEach(Array(clientState.fixableValues)
 									.sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order }), id: \.self.key) { (key, value) in
-					self.insertTypedController(self.clientState.fixableValues[key]!, named: key)
+										self.insertTypedController(self.clientState.fixableValues[key]!, key: key)
 						.padding(.bottom)
 				}
 			}
@@ -115,20 +115,20 @@ struct ControlPanelView: View {
 		 .frame(minWidth: 320.0)
 	}
 
-	func insertTypedController(_ fixable: FixableConfig, named name: String) -> AnyView {
+	func insertTypedController(_ fixable: FixableConfig, key: String) -> AnyView {
 		let controller: AnyView
 		switch fixable {
-			case .bool:
-				let binding = self.clientState.fixableBoolBinding(for: name)
-				controller = AnyView(FixableToggle(value: binding, label: name))
-			case .float(_, let min, let max, _):
-				let binding = self.clientState.fixableFloatBinding(for: name)
-				controller = AnyView(FixableSlider(value: binding, label: name, min: min, max: max))
-			case .color:
-				let binding = self.clientState.fixableColorBinding(for: name)
-				controller = AnyView(FixableColorWell(value: binding, label: name))
-			case .divider:
-				controller = AnyView(Text(name).font(.headline))
+			case .bool(_, let display):
+				let binding = self.clientState.fixableBoolBinding(for: key)
+				controller = AnyView(FixableToggle(value: binding, label: display.label))
+			case .float(_, let min, let max, let display):
+				let binding = self.clientState.fixableFloatBinding(for: key)
+				controller = AnyView(FixableSlider(value: binding, label: display.label, min: min, max: max))
+			case .color(_, let display):
+				let binding = self.clientState.fixableColorBinding(for: key)
+				controller = AnyView(FixableColorWell(value: binding, label: display.label))
+			case .divider(let display):
+				controller = AnyView(Text(display.label).font(.headline))
 		}
 		
 		return AnyView(
@@ -197,11 +197,11 @@ struct ControlPanelView_Previews: PreviewProvider {
 			previewState.connected = true
 			previewState.connecting = false
 			previewState.fixableValues = [
-				"Header" : .divider(order: 0),
-				"Slider 1" : .float(value: 0.5, min: 0.25, max: 1.0, order: 3),
-				"Slider 2" : .float(value: 90.0, min: 0.0, max: 360.55, order: 2),
-				"Toggle" : .bool(value: true, order: 1),
-				"Color" : .color(value: .black, order: 5)
+				"h" : .divider(display: FixableDisplay("Header", order: 0)),
+				"s1" : .float(value: 0.5, min: 0.25, max: 1.0, display: FixableDisplay("Slider 1", order: 3)),
+				"s2" : .float(value: 90.0, min: 0.0, max: 360.55, display: FixableDisplay("Slider 2", order: 2)),
+				"n" : .bool(value: true, display: FixableDisplay("Toggle", order: 1)),
+				"c" : .color(value: .black, display: FixableDisplay("Color", order: 5))
 			]
 			return ControlPanelView(clientState: previewState)
 				.frame(width: 450.0, height: 600.0)
