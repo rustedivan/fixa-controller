@@ -14,13 +14,13 @@ import SwiftUI
 import fixa
 
 class ControllerState: ObservableObject {
-	var controllerValueChanged = PassthroughSubject<[String], Never>()
+	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
 	@Published var fixableValues: NamedFixables {
 		didSet { controllerValueChanged.send(dirtyKeys) }
 	}
-	var dirtyKeys: [String]
+	var dirtyKeys: [FixableId]
 
 	init() {
 		connecting = false
@@ -29,7 +29,7 @@ class ControllerState: ObservableObject {
 		dirtyKeys = []
 	}
 	
-	func fixableBoolBinding(for key: String) -> Binding<Bool> {
+	func fixableBoolBinding(for key: FixableId) -> Binding<Bool> {
 		let bound = fixableValues[key]
 		return .init(
 			get: {
@@ -43,7 +43,7 @@ class ControllerState: ObservableObject {
 			})
 	}
 	
-	func fixableFloatBinding(for key: String) -> Binding<Float> {
+	func fixableFloatBinding(for key: FixableId) -> Binding<Float> {
 		return .init(
 			get: {
 				guard case let .float(value, _, _, _) = self.fixableValues[key] else { return 0.0 }
@@ -56,7 +56,7 @@ class ControllerState: ObservableObject {
 			})
 	}
 	
-	func fixableColorBinding(for key: String) -> Binding<CGColor> {
+	func fixableColorBinding(for key: FixableId) -> Binding<CGColor> {
 		return .init(
 			get: {
 				guard case let .color(value, _) = self.fixableValues[key] else { return .black }

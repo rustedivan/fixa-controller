@@ -14,17 +14,17 @@ import fixa
 
 // % Declare the set of fixable values
 struct AppFixables {
-	static let size = FixableSetup("Envelope size", config: .float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size")))
-	static let angle = FixableSetup("Envelope angle", config: .float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle")))
-	static let open = FixableSetup("Letter read", config: .bool(value: false, display: FixableDisplay("Letter read")))
-	static let color = FixableSetup("Letter color", config: .color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color")))
+	static let size = FixableId()
+	static let angle = FixableId()
+	static let open = FixableId()
+	static let color = FixableId()
 }
 
 class VisualEnvelope: ObservableObject {
-	@Published var size = FixableFloat(AppFixables.size)		// % Wrap the variable instances by type and name
-	@Published var angle = FixableFloat(AppFixables.angle)
-	@Published var open = FixableBool(AppFixables.open)
-	@Published var color = FixableColor(AppFixables.color)
+	@Published var size = FixableFloat(AppFixables.size, initial: 50.0)		// % Connect to a Fixable identifier and set the pre-connection value
+	@Published var angle = FixableFloat(AppFixables.angle, initial: 0.0)
+	@Published var open = FixableBool(AppFixables.open, initial: false)
+	@Published var color = FixableColor(AppFixables.color, initial: UIColor.black.cgColor)
 	var sizeSubject: AnyCancellable? = nil
 	var angleSubject: AnyCancellable? = nil
 	var openSubject: AnyCancellable? = nil
@@ -44,12 +44,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var envelope: VisualEnvelope?
 	
 	var fixaStream = FixaStream(fixableSetups: [
-		FixableSetup("Tweaks", config: .divider(display: FixableDisplay("Tweaks"))),
-		AppFixables.size,
-		AppFixables.angle,
-		AppFixables.color,
-		FixableSetup("Controls", config: .divider(display: FixableDisplay("Controls"))),
-		AppFixables.open
+		FixableId() : 				.divider(display: FixableDisplay("Tweaks")),
+		AppFixables.size : 		.float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size")),
+		AppFixables.angle : 	.float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle")),
+		AppFixables.color : 	.color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color")),
+		FixableId() : 				.divider(display: FixableDisplay("Controls")),
+		AppFixables.open : 		.bool(value: false, display: FixableDisplay("Letter read"))
 	])
 		
 		

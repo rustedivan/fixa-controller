@@ -115,7 +115,7 @@ struct ControlPanelView: View {
 		 .frame(minWidth: 320.0)
 	}
 
-	func insertTypedController(_ fixable: FixableConfig, key: String) -> AnyView {
+	func insertTypedController(_ fixable: FixableConfig, key: FixableId) -> AnyView {
 		let controller: AnyView
 		switch fixable {
 			case .bool(_, let display):
@@ -197,11 +197,11 @@ struct ControlPanelView_Previews: PreviewProvider {
 			previewState.connected = true
 			previewState.connecting = false
 			previewState.fixableValues = [
-				"h" : .divider(display: FixableDisplay("Header", order: 0)),
-				"s1" : .float(value: 0.5, min: 0.25, max: 1.0, display: FixableDisplay("Slider 1", order: 3)),
-				"s2" : .float(value: 90.0, min: 0.0, max: 360.55, display: FixableDisplay("Slider 2", order: 2)),
-				"n" : .bool(value: true, display: FixableDisplay("Toggle", order: 1)),
-				"c" : .color(value: .black, display: FixableDisplay("Color", order: 5))
+				FixableId() : .divider(display: FixableDisplay("Header", order: 0)),
+				FixableId() : .float(value: 0.5, min: 0.25, max: 1.0, display: FixableDisplay("Slider 1", order: 3)),
+				FixableId() : .float(value: 90.0, min: 0.0, max: 360.55, display: FixableDisplay("Slider 2", order: 2)),
+				FixableId() : .bool(value: true, display: FixableDisplay("Toggle", order: 1)),
+				FixableId() : .color(value: .black, display: FixableDisplay("Color", order: 5))
 			]
 			return ControlPanelView(clientState: previewState)
 				.frame(width: 450.0, height: 600.0)
