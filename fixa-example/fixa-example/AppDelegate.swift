@@ -44,12 +44,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var envelope: VisualEnvelope?
 	
 	var fixaStream = FixaStream(fixableSetups: [
-		FixableId() : 				.divider(display: FixableDisplay("Tweaks")),
-		AppFixables.size : 		.float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size")),
-		AppFixables.angle : 	.float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle")),
-		AppFixables.color : 	.color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color")),
-		FixableId() : 				.divider(display: FixableDisplay("Controls")),
-		AppFixables.open : 		.bool(value: false, display: FixableDisplay("Letter read"))
+		(FixableId(), 				.divider(display: FixableDisplay("Tweaks"))),
+		(AppFixables.size, 		.float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size"))),
+		(AppFixables.angle, 	.float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle"))),
+		(AppFixables.color, 	.color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color"))),
+		(FixableId(), 				.divider(display: FixableDisplay("Controls"))),
+		(AppFixables.open, 		.bool(value: false, display: FixableDisplay("Letter read")))
 	])
 		
 		
