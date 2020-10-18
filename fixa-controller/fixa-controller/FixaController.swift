@@ -14,6 +14,7 @@ import SwiftUI
 import fixa
 
 class ControllerState: ObservableObject {
+	var streamName: String = "Not connected"
 	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
@@ -68,6 +69,28 @@ class ControllerState: ObservableObject {
 				self.fixableValues[key] = .color(value: $0, display: display)
 			})
 	}
+	
+	func persistTweaks() {
+		let defaults = UserDefaults.standard
+		do {
+			let data = try PropertyListEncoder().encode(fixableValues)
+			defaults.set(data, forKey: streamName)
+		} catch {
+			print("Could not store fixables")	// $ Make into alert
+		}
+	}
+	
+	func restoreTweaks() {
+		let defaults = UserDefaults.standard
+		do {
+			let data = defaults.object(forKey: streamName) as? Data ?? Data()
+			let loadedFixables = try PropertyListDecoder().decode(NamedFixables.self, from: data)
+			dirtyKeys = Array(loadedFixables.keys)
+			fixableValues = loadedFixables
+		} catch {
+			print("Could not restore fixables")
+		}
+	}
 }
 
 class FixaController: FixaProtocolDelegate {
@@ -119,7 +142,8 @@ class FixaController: FixaProtocolDelegate {
 		fixaEndConnection(self.clientConnection!)
 	}
 
-	func sessionDidStart(withFixables fixables: NamedFixables) {
+	func sessionDidStart(_ name: String, withFixables fixables: NamedFixables) {
+		clientState.streamName = name
 		clientState.fixableValues = fixables
 		clientState.connected = true
 		print("Fixa controller: synching back to app")

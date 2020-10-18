@@ -111,6 +111,14 @@ struct ControlPanelView: View {
 				}
 			}
 			Spacer()
+			HStack {
+				Button(action: { self.clientState.persistTweaks() }) {
+					Text("Store")
+				}
+				Button(action: { self.clientState.restoreTweaks() }) {
+					Text("Restore")
+				}
+			}
 		}.padding(16.0)
 		 .frame(minWidth: 320.0)
 	}
