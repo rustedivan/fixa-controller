@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14CE9437253CA88B00E63F40 /* TweakSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE9436253CA88B00E63F40 /* TweakSlider.swift */; };
+		14CE943A253CA8CC00E63F40 /* TweakToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE9439253CA8CC00E63F40 /* TweakToggle.swift */; };
+		14CE943E253CA8F100E63F40 /* TweakColorWell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE943D253CA8F100E63F40 /* TweakColorWell.swift */; };
 		14E38DC2250AAF6000170821 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E38DC1250AAF6000170821 /* AppDelegate.swift */; };
 		14E38DC6250AAF6000170821 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E38DC5250AAF6000170821 /* Assets.xcassets */; };
 		14E38DC9250AAF6000170821 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14E38DC8250AAF6000170821 /* Preview Assets.xcassets */; };
@@ -19,6 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14CE9436253CA88B00E63F40 /* TweakSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakSlider.swift; sourceTree = "<group>"; };
+		14CE9439253CA8CC00E63F40 /* TweakToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakToggle.swift; sourceTree = "<group>"; };
+		14CE943D253CA8F100E63F40 /* TweakColorWell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakColorWell.swift; sourceTree = "<group>"; };
 		14E38DBE250AAF6000170821 /* fixa-controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "fixa-controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		14E38DC1250AAF6000170821 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		14E38DC5250AAF6000170821 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -91,6 +97,9 @@
 			children = (
 				14E38DDB250AB05900170821 /* BrowserView.swift */,
 				14E38DDD250AB06B00170821 /* ControlPanelView.swift */,
+				14CE9436253CA88B00E63F40 /* TweakSlider.swift */,
+				14CE9439253CA8CC00E63F40 /* TweakToggle.swift */,
+				14CE943D253CA8F100E63F40 /* TweakColorWell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -175,8 +184,11 @@
 				14E38DD5250AAFE200170821 /* FixaCnCApp.swift in Sources */,
 				14E38DC2250AAF6000170821 /* AppDelegate.swift in Sources */,
 				14E38DDE250AB06B00170821 /* ControlPanelView.swift in Sources */,
+				14CE9437253CA88B00E63F40 /* TweakSlider.swift in Sources */,
 				14E38DDC250AB05900170821 /* BrowserView.swift in Sources */,
 				14E38DD9250AB02500170821 /* FixaController.swift in Sources */,
+				14CE943E253CA8F100E63F40 /* TweakColorWell.swift in Sources */,
+				14CE943A253CA8CC00E63F40 /* TweakToggle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

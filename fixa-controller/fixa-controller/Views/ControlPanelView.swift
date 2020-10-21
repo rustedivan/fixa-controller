@@ -10,11 +10,7 @@ import SwiftUI
 
 import fixa
 
-///////////////////
-// $ Until SwiftUI improves
-// SwiftUI cannot yet create ActivityIndicator, and Slider config support is too weak.
-///////////////////
-
+// $ SwiftUI cannot yet create ActivityIndicator
 struct ActivityIndicator: NSViewRepresentable {
 	typealias NSViewType = NSProgressIndicator
 	func makeNSView(context: Context) -> NSProgressIndicator {
@@ -29,71 +25,6 @@ struct ActivityIndicator: NSViewRepresentable {
 	func updateNSView(_ nsView: NSProgressIndicator, context: Context) {
 	}
 }
-
-struct ColorWell: NSViewRepresentable {
-	class Coordinator: NSObject {
-		@Binding var value: CGColor
-		init(value: Binding<CGColor>) {
-			self._value = value
-		}
-		@objc func valueChanged(_ sender: NSColorWell) {
-			self.value = sender.color.cgColor
-		}
-	}
-	
-	@Binding var value: CGColor
-	typealias NSViewType = NSColorWell
-	
-	func makeCoordinator() -> Coordinator {
-		return Coordinator(value: $value)
-	}
-	
-	func makeNSView(context: Context) -> NSColorWell {
-		let view = NSColorWell()
-		view.target = context.coordinator
-		view.action = #selector(Coordinator.valueChanged(_:))
-		return view
-	}
-	
-	func updateNSView(_ nsView: NSColorWell, context: Context) {
-		nsView.color = NSColor(cgColor: value)!
-	}
-}
-
-struct ValueSlider: NSViewRepresentable {
-	class Coordinator: NSObject {
-		@Binding var value: Float
-		init(value: Binding<Float>) {
-			self._value = value
-		}
-		@objc func valueChanged(_ sender: NSSlider) {
-			self.value = sender.floatValue
-		}
-	}
-	
-	@Binding var value: Float
-	let minValue: Float
-	let maxValue: Float
-	typealias NSViewType = NSSlider
-	
-	func makeCoordinator() -> Coordinator {
-		return Coordinator(value: $value)
-	}
-	
-	func makeNSView(context: Context) -> NSSlider {
-		let view = NSSlider(value: Double(value),
-												minValue: Double(minValue), maxValue: Double(maxValue),
-												target: context.coordinator,
-												action: #selector(Coordinator.valueChanged(_:)))
-		view.numberOfTickMarks = 10
-		return view
-	}
-	
-	func updateNSView(_ nsView: NSSlider, context: Context) {
-		nsView.floatValue = value
-	}
-}
-//////////////////
 
 struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
@@ -142,60 +73,6 @@ struct ControlPanelView: View {
 		return AnyView(
 			controller.frame(maxWidth: .infinity)
 		)
-	}
-}
-
-struct FixableToggle: View {
-	@Binding var value: Bool
-	let label: String
-	
-	var body: some View {
-		HStack{
-			Text(label)
-			Toggle(isOn: $value) { Text("") }
-			Spacer()
-		}
-	}
-}
-
-struct FixableSlider: View {
-	@Binding var value: Float
-	let label: String
-	let min: Float
-	let max: Float
-	
-	var body: some View {
-		let format = NumberFormatter()
-		format.usesSignificantDigits = true
-		format.minimumSignificantDigits = 2
-		format.maximumSignificantDigits = 5
-		return VStack {
-			Text(label).frame(maxWidth: .infinity, alignment: .leading)
-			HStack {
-				VStack {
-					ValueSlider(value: $value, minValue: min, maxValue: max)
-					HStack {
-						Text(format.string(from: NSNumber(value: min))!).font(.system(size: 10.0)).foregroundColor(.gray)
-						Spacer()
-						Text(format.string(from: NSNumber(value: max))!).font(.system(size: 10.0)).foregroundColor(.gray)
-					}
-				}.padding(.leading)
-				TextField("", value: $value, formatter: format).frame(maxWidth: 50.0)
-			}
-		}
-	}
-}
-
-struct FixableColorWell: View {
-	@Binding var value: CGColor
-	let label: String
-	
-	var body: some View {
-		HStack{
-			Text(label)
-			ColorWell(value: $value).frame(width: 24.0, height: 24.0)
-			Spacer()
-		}
 	}
 }
 
