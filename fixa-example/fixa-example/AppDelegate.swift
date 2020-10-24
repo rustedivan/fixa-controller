@@ -14,10 +14,10 @@ import fixa
 
 // % Declare the set of fixable values
 struct AppFixables {
-	static let size = FixableId("size", in: "tweaks")
-	static let angle = FixableId("angle", in: "tweaks")
+	static let size = FixableId("size")
+	static let angle = FixableId("angle")
 	static let open = FixableId("open")
-	static let color = FixableId("color", in: "tweaks")
+	static let color = FixableId("color")
 }
 
 class VisualEnvelope: ObservableObject {
