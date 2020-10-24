@@ -82,11 +82,11 @@ struct ControlPanelView_Previews: PreviewProvider {
 			previewState.connected = true
 			previewState.connecting = false
 			previewState.fixableValues = [
-				FixableId() : .divider(display: FixableDisplay("Header", order: 0)),
-				FixableId() : .float(value: 0.5, min: 0.25, max: 1.0, display: FixableDisplay("Slider 1", order: 3)),
-				FixableId() : .float(value: 90.0, min: 0.0, max: 360.55, display: FixableDisplay("Slider 2", order: 2)),
-				FixableId() : .bool(value: true, display: FixableDisplay("Toggle", order: 1)),
-				FixableId() : .color(value: .black, display: FixableDisplay("Color", order: 5))
+				FixableId("header") : .divider(display: FixableDisplay("Header", order: 0)),
+				FixableId("slider1", in: "header") : .float(value: 0.5, min: 0.25, max: 1.0, display: FixableDisplay("Slider 1", order: 3)),
+				FixableId("slider2", in: "header") : .float(value: 90.0, min: 0.0, max: 360.55, display: FixableDisplay("Slider 2", order: 2)),
+				FixableId("Toggle", in: "header") : .bool(value: true, display: FixableDisplay("Toggle", order: 1)),
+				FixableId("Color") : .color(value: .black, display: FixableDisplay("Color", order: 5))
 			]
 			return ControlPanelView(clientState: previewState)
 				.frame(width: 450.0, height: 600.0)
