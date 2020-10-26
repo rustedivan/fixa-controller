@@ -86,8 +86,18 @@ class ControllerState: ObservableObject {
 			let data = defaults.object(forKey: streamName) as? Data ?? Data()
 			let loadedFixables = try PropertyListDecoder().decode(NamedFixables.self, from: data)
 			dirtyKeys = Array(loadedFixables.keys)
-			for loaded in loadedFixables {
-				fixableValues[loaded.key] = loaded.value
+			for (existingKey, existingValue) in fixableValues {
+				guard let loaded = loadedFixables[existingKey] else { continue }
+				// Compose new configs from the loaded value and the existing display
+				switch (loaded, existingValue) {
+					case (FixableConfig.bool(let value, _), FixableConfig.bool(_, let display)):
+						fixableValues[existingKey] = .bool(value: value, display: display)
+					case (FixableConfig.float(let value, _, _, _), FixableConfig.float(_, let min, let max, let display)):
+						fixableValues[existingKey] = .float(value: value, min: min, max: max, display: display)
+					case (FixableConfig.color(let value, _), FixableConfig.color(_, let display)):
+						fixableValues[existingKey] = .color(value: value, display: display)
+					default: continue
+				}
 			}
 		} catch {
 			print("Could not restore fixables")
