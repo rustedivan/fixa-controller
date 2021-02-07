@@ -22,7 +22,7 @@ struct AppFixables {
 
 class VisualEnvelope: ObservableObject {
 	@Published var size = FixableFloat(AppFixables.size, initial: 50.0)		// % Connect to a Fixable identifier and set the pre-connection value
-	@Published var angle = FixableFloat(AppFixables.angle, initial: 0.0)
+	@Published var angle = FixableFloat(AppFixables.angle, initial: -30.0)
 	@Published var open = FixableBool(AppFixables.open, initial: false)
 	@Published var color = FixableColor(AppFixables.color, initial: UIColor.black.cgColor)
 	var sizeSubject: AnyCancellable? = nil
@@ -45,11 +45,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	var fixaStream = FixaStream(fixableSetups: [
 		(FixableId("tweaks"), 	.divider(display: FixableDisplay("Tweaks"))),
-		(AppFixables.size, 			.float(value: 50.0, min: 10.0, max: 150.0, display: FixableDisplay("Envelope size"))),
-		(AppFixables.angle, 		.float(value: 0.0, min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle"))),
-		(AppFixables.color, 		.color(value: UIColor.blue.cgColor, display: FixableDisplay("Letter color"))),
+		(AppFixables.size, 			.float(min: 10.0, max: 150.0, display: FixableDisplay("Envelope size"))),
+		(AppFixables.angle, 		.float(min: -180.0, max: 180.0, display: FixableDisplay("Envelope angle"))),
+		(AppFixables.color, 		.color(display: FixableDisplay("Letter color"))),
 		(FixableId("controls"), .divider(display: FixableDisplay("Controls"))),
-		(AppFixables.open, 			.bool(value: false, display: FixableDisplay("Letter read")))
+		(AppFixables.open, 			.bool(display: FixableDisplay("Letter read")))
 	])
 		
 		
@@ -61,8 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		fixaStream.startListening()
 		return true
 	}
-	
-	// $ stop/restart the listener
 	
 	// MARK: UISceneSession Lifecycle
 
@@ -77,8 +75,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
 		// Use this method to release any resources that were specific to the discarded scenes, as they will not return.
 	}
-
-	
-
 }
 

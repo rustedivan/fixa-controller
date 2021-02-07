@@ -18,7 +18,8 @@ class ControllerState: ObservableObject {
 	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
-	@Published var fixableValues: NamedFixables {
+	@Published var fixableConfigs: NamedFixableConfigs
+	@Published var fixableValues: NamedFixableValues {
 		didSet { controllerValueChanged.send(dirtyKeys) }
 	}
 	var dirtyKeys: [FixableId]
@@ -26,47 +27,44 @@ class ControllerState: ObservableObject {
 	init() {
 		connecting = false
 		connected = false
+		fixableConfigs = [:]
 		fixableValues = [:]
 		dirtyKeys = []
 	}
 	
 	func fixableBoolBinding(for key: FixableId) -> Binding<Bool> {
-		let bound = fixableValues[key]
 		return .init(
 			get: {
-				guard case let .bool(value, _) = bound else { return false }
+				guard case let .bool(value) = self.fixableValues[key] else { return false }
 				return value
 			},
 			set: {
-				guard case let .bool(_, display) = bound else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .bool(value: $0, display: display)
+				self.fixableValues[key] = .bool(value: $0)
 			})
 	}
 	
 	func fixableFloatBinding(for key: FixableId) -> Binding<Float> {
 		return .init(
 			get: {
-				guard case let .float(value, _, _, _) = self.fixableValues[key] else { return 0.0 }
+				guard case let .float(value) = self.fixableValues[key] else { return 0.0 }
 				return value
 			},
 			set: {
-				guard case .float(_, let min, let max, let display) = self.fixableValues[key] else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .float(value: $0, min: min, max: max, display: display)
+				self.fixableValues[key] = .float(value: $0)
 			})
 	}
 	
 	func fixableColorBinding(for key: FixableId) -> Binding<CGColor> {
 		return .init(
 			get: {
-				guard case let .color(value, _) = self.fixableValues[key] else { return .black }
+				guard case let .color(value) = self.fixableValues[key] else { return .black }
 				return value
 			},
 			set: {
-				guard case .color(_, let display) = self.fixableValues[key] else { return }
 				self.dirtyKeys.append(key)	// Mark the key as dirty before updating the value, otherwise valueChangedStream won't see it
-				self.fixableValues[key] = .color(value: $0, display: display)
+				self.fixableValues[key] = .color(value: $0)
 			})
 	}
 	
@@ -84,21 +82,8 @@ class ControllerState: ObservableObject {
 		let defaults = UserDefaults.standard
 		do {
 			let data = defaults.object(forKey: streamName) as? Data ?? Data()
-			let loadedFixables = try PropertyListDecoder().decode(NamedFixables.self, from: data)
-			dirtyKeys = Array(loadedFixables.keys)
-			for (existingKey, existingValue) in fixableValues {
-				guard let loaded = loadedFixables[existingKey] else { continue }
-				// Compose new configs from the loaded value and the existing display
-				switch (loaded, existingValue) {
-					case (FixableConfig.bool(let value, _), FixableConfig.bool(_, let display)):
-						fixableValues[existingKey] = .bool(value: value, display: display)
-					case (FixableConfig.float(let value, _, _, _), FixableConfig.float(_, let min, let max, let display)):
-						fixableValues[existingKey] = .float(value: value, min: min, max: max, display: display)
-					case (FixableConfig.color(let value, _), FixableConfig.color(_, let display)):
-						fixableValues[existingKey] = .color(value: value, display: display)
-					default: continue
-				}
-			}
+			fixableValues = try PropertyListDecoder().decode(NamedFixableValues.self, from: data)
+			dirtyKeys = Array(fixableValues.keys)
 		} catch {
 			print("Could not restore fixables")
 		}
@@ -162,12 +147,11 @@ class FixaController: FixaProtocolDelegate {
 		fixaEndConnection(self.clientConnection!)
 	}
 
-	func sessionDidStart(_ name: String, withFixables fixables: NamedFixables) {
+	func sessionDidStart(_ name: String, withFixables fixables: NamedFixableConfigs, withValues values: NamedFixableValues) {
 		clientState.streamName = name
-		clientState.fixableValues = fixables
+		clientState.fixableConfigs = fixables
+		clientState.fixableValues = values
 		clientState.connected = true
-		print("Fixa controller: synching back to app")
-		fixaSendUpdates(clientState.fixableValues, over: clientConnection!)
 		clientState.connecting = false
 	}
 
