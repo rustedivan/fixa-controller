@@ -30,15 +30,34 @@ struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
 	
 	var body: some View {
+		let orderedControls = Array(clientState.fixableValues).sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order })
 		VStack {
 			if clientState.connecting {
 				ActivityIndicator()
 			} else if clientState.connected {
-				// $ This is terrible until XC12
-				ForEach(Array(clientState.fixableValues)
-									.sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order }), id: \.self.key) { (key, value) in
-										self.insertTypedController(self.clientState.fixableValues[key]!, key: key)
-						.padding(.bottom)
+				ForEach(orderedControls, id: \.self.key) { (key, value) in
+					switch value {
+						case .bool(_, let display):
+							FixableToggle(value: self.clientState.fixableBoolBinding(for: key),
+														label: display.label)
+								.padding(.bottom)
+								.frame(maxWidth: .infinity)
+						case .float(_, let min, let max, let display):
+							FixableSlider(value: self.clientState.fixableFloatBinding(for: key),
+														label: display.label, min: min, max: max)
+								.padding(.bottom)
+								.frame(maxWidth: .infinity)
+						case .color(_, let display):
+							FixableColorWell(value: self.clientState.fixableColorBinding(for: key),
+															 label: display.label)
+								.padding(.bottom)
+								.frame(maxWidth: .infinity)
+						case .divider(let display):
+							Text(display.label)
+								.font(.headline)
+								.padding(.bottom)
+								.frame(maxWidth: .infinity)
+					}
 				}
 			}
 			Spacer()
