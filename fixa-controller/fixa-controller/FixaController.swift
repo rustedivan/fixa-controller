@@ -14,6 +14,7 @@ import SwiftUI
 import fixa
 
 class ControllerState: ObservableObject {
+	var streamName: String = "Not connected"
 	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
@@ -68,9 +69,45 @@ class ControllerState: ObservableObject {
 				self.fixableValues[key] = .color(value: $0, display: display)
 			})
 	}
+	
+	func persistTweaks() {
+		let defaults = UserDefaults.standard
+		do {
+			let data = try PropertyListEncoder().encode(fixableValues)
+			defaults.set(data, forKey: streamName)
+		} catch {
+			print("Could not store fixables")	// $ Make into alert
+		}
+	}
+	
+	func restoreTweaks() {
+		let defaults = UserDefaults.standard
+		do {
+			let data = defaults.object(forKey: streamName) as? Data ?? Data()
+			let loadedFixables = try PropertyListDecoder().decode(NamedFixables.self, from: data)
+			dirtyKeys = Array(loadedFixables.keys)
+			for (existingKey, existingValue) in fixableValues {
+				guard let loaded = loadedFixables[existingKey] else { continue }
+				// Compose new configs from the loaded value and the existing display
+				switch (loaded, existingValue) {
+					case (FixableConfig.bool(let value, _), FixableConfig.bool(_, let display)):
+						fixableValues[existingKey] = .bool(value: value, display: display)
+					case (FixableConfig.float(let value, _, _, _), FixableConfig.float(_, let min, let max, let display)):
+						fixableValues[existingKey] = .float(value: value, min: min, max: max, display: display)
+					case (FixableConfig.color(let value, _), FixableConfig.color(_, let display)):
+						fixableValues[existingKey] = .color(value: value, display: display)
+					default: continue
+				}
+			}
+		} catch {
+			print("Could not restore fixables")
+		}
+	}
 }
 
 class FixaController: FixaProtocolDelegate {
+	public static var DidEndConnection = Notification.Name(rawValue: "FixaController.DidEndConnection")
+
 	enum SendFrequency: Double {
 		case immediately = 0.0
 		case normal = 0.02
@@ -110,6 +147,12 @@ class FixaController: FixaProtocolDelegate {
 	
 	func receiveMessage() {
 		clientConnection?.receiveMessage(completion: { (data, context, _, error) in
+			if context?.isFinal == true {
+				print("Fixa controller: app hung up. Disconnecting.")
+				self.sessionDidEnd()
+				return
+			}
+			
 			fixaReceiveMessage(data: data, context: context, error: error)
 			self.receiveMessage()
 		})
@@ -119,7 +162,8 @@ class FixaController: FixaProtocolDelegate {
 		fixaEndConnection(self.clientConnection!)
 	}
 
-	func sessionDidStart(withFixables fixables: NamedFixables) {
+	func sessionDidStart(_ name: String, withFixables fixables: NamedFixables) {
+		clientState.streamName = name
 		clientState.fixableValues = fixables
 		clientState.connected = true
 		print("Fixa controller: synching back to app")
@@ -130,5 +174,7 @@ class FixaController: FixaProtocolDelegate {
 	func sessionDidEnd() {
 		clientConnection!.cancel()
 		clientState.connected = false
+		let connectionId = clientConnection!.endpoint.hashValue
+		NotificationCenter.default.post(name: FixaController.DidEndConnection, object: connectionId)
 	}
 }

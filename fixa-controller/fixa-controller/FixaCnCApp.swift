@@ -18,7 +18,7 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	var fixaBrowser = FixaBrowser()
 	var connectSubject: AnyCancellable!
 
-	var controlWindowControllers: [NSWindowController] = []
+	var controlWindowControllers: [Int : NSWindowController] = [:]
 	var controlClient: FixaController?
 	
 	override init() {
@@ -30,6 +30,11 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 			.sink { (browserResult) in
 				self.connectController(to: browserResult)
 			}
+		
+		NotificationCenter.default.addObserver(forName: FixaController.DidEndConnection, object: nil, queue: nil) { (notification) in
+			let connectionId: Int = notification.object as! Int
+			self.closeControlWindow(for: connectionId)
+		}
 	}
 	
 	func connectController(to result: BrowserResult) {
@@ -39,7 +44,9 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		controlClient!.openConnection(to: result.endpoint)
 		
 		let controlWindow = self.makeControlWindow(forView: controlView, appName: result.appName, deviceName: result.deviceName)
-		controlWindowControllers.append(NSWindowController(window: controlWindow))
+		
+		let connectionId = result.endpoint!.hashValue
+		controlWindowControllers[connectionId] = NSWindowController(window: controlWindow)
 	}
 
 	func makeBrowserWindow(forView browser: BrowserView) -> NSWindow {
@@ -73,6 +80,12 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	}
 	
 	func windowWillClose(_ notification: Notification) {
-		controlClient!.hangUp()
+		if controlClient?.clientState.connected == true {
+			controlClient!.hangUp()
+		}
+	}
+	
+	func closeControlWindow(for connection: Int) {
+		controlWindowControllers[connection]?.close()
 	}
 }
