@@ -106,6 +106,8 @@ class ControllerState: ObservableObject {
 }
 
 class FixaController: FixaProtocolDelegate {
+	public static var DidEndConnection = Notification.Name(rawValue: "FixaController.DidEndConnection")
+
 	enum SendFrequency: Double {
 		case immediately = 0.0
 		case normal = 0.02
@@ -145,6 +147,12 @@ class FixaController: FixaProtocolDelegate {
 	
 	func receiveMessage() {
 		clientConnection?.receiveMessage(completion: { (data, context, _, error) in
+			if context?.isFinal == true {
+				print("Fixa controller: app hung up. Disconnecting.")
+				self.sessionDidEnd()
+				return
+			}
+			
 			fixaReceiveMessage(data: data, context: context, error: error)
 			self.receiveMessage()
 		})
@@ -166,5 +174,7 @@ class FixaController: FixaProtocolDelegate {
 	func sessionDidEnd() {
 		clientConnection!.cancel()
 		clientState.connected = false
+		let connectionId = clientConnection!.endpoint.hashValue
+		NotificationCenter.default.post(name: FixaController.DidEndConnection, object: connectionId)
 	}
 }
