@@ -26,8 +26,8 @@
 	<string>Copyright © 2020 Ivan Milles. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Fixa wants to looks for the Fixa-enabled app on your network.</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
