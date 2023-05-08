@@ -102,6 +102,8 @@ class FixaController: FixaProtocolDelegate {
 	let clientState: ControllerState
 	var valueChangedStream: AnyCancellable?
 	
+	var midiClient: FixaMidiHooks?
+	
 	init(frequency: SendFrequency) {
 		clientState = ControllerState()
 		fixaInitProtocol(withDelegate: self)
@@ -153,6 +155,8 @@ class FixaController: FixaProtocolDelegate {
 		clientState.fixableValues = values
 		clientState.connected = true
 		clientState.connecting = false
+		
+		connectMidi()
 	}
 
 	func sessionDidEnd() {
@@ -160,5 +164,19 @@ class FixaController: FixaProtocolDelegate {
 		clientState.connected = false
 		let connectionId = clientConnection!.endpoint.hashValue
 		NotificationCenter.default.post(name: FixaController.DidEndConnection, object: connectionId)
+	}
+	
+	func connectMidi() {
+		midiClient = FixaMidiHooks()
+		let midiDevices = midiClient!.midiDevices()
+		if let firstDevice = midiDevices.first {
+			_ = midiClient!.useMidiDevice(name: firstDevice.0, endpoint: firstDevice.1, forConfigs: clientState.fixableConfigs)
+			midiClient!.applyMidiMessage({ [self] (target, midiSetValue) in
+				DispatchQueue.main.sync {
+					clientState.fixableValues[target] = midiSetValue
+					clientState.controllerValueChanged.send([target])
+				}
+			})
+		}
 	}
 }

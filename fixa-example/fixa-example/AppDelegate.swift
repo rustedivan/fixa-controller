@@ -23,7 +23,7 @@ struct AppFixables {
 
 class VisualEnvelope: ObservableObject {
 	@Published var size = FixableFloat(AppFixables.size, initial: 50.0)		// % Connect to a Fixable identifier and set the pre-connection value
-	@Published var angle = FixableFloat(AppFixables.angle, initial: -30.0) // $ this one calls registerInstance before FixaStream setup when grouped
+	@Published var angle = FixableFloat(AppFixables.angle, initial: -30.0)
 	@Published var open = FixableBool(AppFixables.open, initial: false)
 	@Published var color = FixableColor(AppFixables.color, initial: UIColor.black.cgColor)
 	var sizeSubject: AnyCancellable? = nil
