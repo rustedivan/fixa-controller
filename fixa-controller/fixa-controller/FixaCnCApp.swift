@@ -55,7 +55,7 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	}
 	
 	func openControllerConfigWindow() {
-		let controllerConfigView = ControllerConfigView()
+		let controllerConfigView = ControllerConfigView(clientState: controlClient!.clientState)
 		_ = makeExternalControllerWindow(forView: controllerConfigView)
 	}
 

@@ -102,10 +102,10 @@
 			children = (
 				14E38DDB250AB05900170821 /* BrowserView.swift */,
 				14E38DDD250AB06B00170821 /* ControlPanelView.swift */,
+				142F42F72A0BFED7004BAE47 /* ControllerConfigView.swift */,
 				14CE9436253CA88B00E63F40 /* TweakSlider.swift */,
 				14CE9439253CA8CC00E63F40 /* TweakToggle.swift */,
 				14CE943D253CA8F100E63F40 /* TweakColorWell.swift */,
-				142F42F72A0BFED7004BAE47 /* ControllerConfigView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
