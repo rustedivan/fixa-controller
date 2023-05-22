@@ -18,13 +18,15 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	var connectSubject: AnyCancellable!
 	var controllerConfigSubject: AnyCancellable!
 
+	var browserWindow: NSWindow?
+	var externalDeviceWindowController: NSWindowController?
 	var controlWindowControllers: [Int : NSWindowController] = [:]
 	var controlClient: FixaController?
 	
 	override init() {
 		super.init()
 		let browserView = BrowserView(availableFixaApps: fixaBrowser.browserResults)
-		_ = makeBrowserWindow(forView: browserView)
+		browserWindow = makeBrowserWindow(forView: browserView)
 
 		connectSubject = browserView.connectSubject
 			.sink { (browserResult) in
@@ -55,8 +57,9 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	}
 	
 	func openControllerConfigWindow() {
-		let controllerConfigView = ControllerConfigView(clientState: controlClient!.clientState)
-		_ = makeExternalControllerWindow(forView: controllerConfigView)
+		let externalDeviceConfigView = ControllerConfigView(clientState: controlClient!.clientState)
+		let externalDeviceConfigWindow = makeExternalControllerWindow(forView: externalDeviceConfigView)
+		externalDeviceWindowController = NSWindowController(window: externalDeviceConfigWindow)
 	}
 
 	func makeBrowserWindow(forView browser: BrowserView) -> NSWindow {
@@ -104,8 +107,12 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	}
 	
 	func windowWillClose(_ notification: Notification) {
-		if controlClient?.clientState.connected == true {
-			controlClient!.hangUp()
+		let closingWindow = notification.object as? NSWindow
+		let closingWindowController = closingWindow?.windowController
+		if controlWindowControllers.contains (where: { closingWindowController == $0.value }) {
+			if controlClient?.clientState.connected == true {
+				controlClient!.hangUp()
+			}
 		}
 	}
 	
