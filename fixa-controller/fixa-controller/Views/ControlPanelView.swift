@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-
+import Combine
 import fixa
 
 // $ SwiftUI cannot yet create ActivityIndicator
@@ -28,6 +28,7 @@ struct ActivityIndicator: NSViewRepresentable {
 
 struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
+	var externalControllerSubject = PassthroughSubject<(), Never>()
 	
 	var body: some View {
 		let orderedControls = Array(clientState.fixableConfigs).sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order })
@@ -46,6 +47,11 @@ struct ControlPanelView: View {
 				}
 				Button(action: { self.clientState.restoreTweaks() }) {
 					Text("Restore")
+				}
+				if clientState.externalControllers.isEmpty == false {
+					Button(action: { self.openControllerConfig() } ) {
+						Text("Select controller")
+					}
 				}
 			}
 		}.padding(16.0)
@@ -92,6 +98,10 @@ struct ControlPanelView: View {
 			default:
 				Text("Unmapped control: \(key.debugDescription)").font(.callout).foregroundColor(.red)
 		}
+	}
+	
+	func openControllerConfig() {
+		externalControllerSubject.send(())
 	}
 }
 

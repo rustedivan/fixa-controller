@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		142F42F82A0BFED7004BAE47 /* ControllerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142F42F72A0BFED7004BAE47 /* ControllerConfigView.swift */; };
 		14CE9437253CA88B00E63F40 /* TweakSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE9436253CA88B00E63F40 /* TweakSlider.swift */; };
 		14CE943A253CA8CC00E63F40 /* TweakToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE9439253CA8CC00E63F40 /* TweakToggle.swift */; };
 		14CE943E253CA8F100E63F40 /* TweakColorWell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CE943D253CA8F100E63F40 /* TweakColorWell.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		142F42F72A0BFED7004BAE47 /* ControllerConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerConfigView.swift; sourceTree = "<group>"; };
 		14CE9436253CA88B00E63F40 /* TweakSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakSlider.swift; sourceTree = "<group>"; };
 		14CE9439253CA8CC00E63F40 /* TweakToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakToggle.swift; sourceTree = "<group>"; };
 		14CE943D253CA8F100E63F40 /* TweakColorWell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakColorWell.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				14CE9436253CA88B00E63F40 /* TweakSlider.swift */,
 				14CE9439253CA8CC00E63F40 /* TweakToggle.swift */,
 				14CE943D253CA8F100E63F40 /* TweakColorWell.swift */,
+				142F42F72A0BFED7004BAE47 /* ControllerConfigView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				14E38DC2250AAF6000170821 /* AppDelegate.swift in Sources */,
 				14E38DDE250AB06B00170821 /* ControlPanelView.swift in Sources */,
 				14CE9437253CA88B00E63F40 /* TweakSlider.swift in Sources */,
+				142F42F82A0BFED7004BAE47 /* ControllerConfigView.swift in Sources */,
 				14E38DDC250AB05900170821 /* BrowserView.swift in Sources */,
 				14E38DD9250AB02500170821 /* FixaController.swift in Sources */,
 				14CE943E253CA8F100E63F40 /* TweakColorWell.swift in Sources */,

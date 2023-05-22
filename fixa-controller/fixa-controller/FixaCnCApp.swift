@@ -14,9 +14,9 @@ import SwiftUI
 import fixa
 
 class FixaCnCApp: NSObject, NSWindowDelegate {
-	var browserWindow: NSWindow!
 	var fixaBrowser = FixaBrowser()
 	var connectSubject: AnyCancellable!
+	var controllerConfigSubject: AnyCancellable!
 
 	var controlWindowControllers: [Int : NSWindowController] = [:]
 	var controlClient: FixaController?
@@ -24,13 +24,13 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	override init() {
 		super.init()
 		let browserView = BrowserView(availableFixaApps: fixaBrowser.browserResults)
-		browserWindow = makeBrowserWindow(forView: browserView)
+		_ = makeBrowserWindow(forView: browserView)
 
 		connectSubject = browserView.connectSubject
 			.sink { (browserResult) in
 				self.connectController(to: browserResult)
 			}
-		
+				
 		NotificationCenter.default.addObserver(forName: FixaController.DidEndConnection, object: nil, queue: nil) { (notification) in
 			let connectionId: Int = notification.object as! Int
 			self.closeControlWindow(for: connectionId)
@@ -44,9 +44,19 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		controlClient!.openConnection(to: result.endpoint)
 		
 		let controlWindow = self.makeControlWindow(forView: controlView, appName: result.appName, deviceName: result.deviceName)
+		controllerConfigSubject = controlView.externalControllerSubject
+			.sink {
+				self.openControllerConfigWindow()
+			}
+		
 		
 		let connectionId = result.endpoint!.hashValue
 		controlWindowControllers[connectionId] = NSWindowController(window: controlWindow)
+	}
+	
+	func openControllerConfigWindow() {
+		let controllerConfigView = ControllerConfigView()
+		_ = makeExternalControllerWindow(forView: controllerConfigView)
 	}
 
 	func makeBrowserWindow(forView browser: BrowserView) -> NSWindow {
@@ -70,6 +80,20 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		window.title = "\(appName) on \(deviceName)"
 		window.setFrameAutosaveName("Control Window")
 		window.contentView = NSHostingView(rootView: controlPanel)
+		window.makeKeyAndOrderFront(nil)
+		window.delegate = self
+		return window
+	}
+	
+	func makeExternalControllerWindow(forView controllerView: ControllerConfigView) -> NSWindow {
+		// Create the window and set the content view.
+		let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 500),
+													styleMask: [.titled, .miniaturizable, .resizable, .closable, .fullSizeContentView],
+													backing: .buffered, defer: true)
+		window.center()
+		window.title = "External controllers"
+		window.setFrameAutosaveName("Controller Config Window")
+		window.contentView = NSHostingView(rootView: controllerView)
 		window.makeKeyAndOrderFront(nil)
 		window.delegate = self
 		return window
