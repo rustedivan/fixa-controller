@@ -21,9 +21,27 @@ struct ControllerConfigView: View {
 						Text(name).tag(name)
 					}
 				}.padding(16.0)
-			}
-			Spacer()
+				ForEach(orderedControls, id: \.self.key) { (key, value) in
+					Button(action: { self.startBinding(key) } ) {
+						Text(bindingLabel(value))
+					}
+				}
+			}.padding(16.0)
 		}.padding(16.0)
+	}
+	
+	func startBinding(_ key: FixableId) {
+		midiHooks?.startBinding(key)
+	}
+	
+	func bindingLabel(_ config: FixableConfig) -> String {
+		var label = ""
+		switch config {
+			case .bool(let display): label = display.label
+			case .float(_, _, let display): label = display.label
+			default: label = ""
+		}
+		return "Bind \(label)"
 	}
 }
 

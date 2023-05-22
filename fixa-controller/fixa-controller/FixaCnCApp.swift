@@ -57,7 +57,7 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 	}
 	
 	func openControllerConfigWindow() {
-		let externalDeviceConfigView = ControllerConfigView(clientState: controlClient!.clientState)
+		let externalDeviceConfigView = ControllerConfigView(clientState: controlClient!.clientState, midiHooks: controlClient!.midiClient)
 		let externalDeviceConfigWindow = makeExternalControllerWindow(forView: externalDeviceConfigView)
 		externalDeviceWindowController = NSWindowController(window: externalDeviceConfigWindow)
 	}

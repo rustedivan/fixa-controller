@@ -107,6 +107,10 @@ class FixaMidiHooks {
 		return err == noErr
 	}
 	
+	func startBinding(_ id: FixableId) {
+		listenForTrigger = FixableMidiBinding.hold(id)
+	}
+	
 	func handleMidiDevice(_ callback: @escaping FixaMidiHandleDeviceChange) {
 		deviceChangeCallback = callback
 	}
