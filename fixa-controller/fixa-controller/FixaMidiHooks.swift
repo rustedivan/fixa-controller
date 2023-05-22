@@ -18,6 +18,7 @@ fileprivate enum FixableMidiBinding {
 }
 
 typealias FixaMidiApplyMessage = (FixableId, FixableValue) -> ()
+typealias FixaMidiHandleDeviceChange = () -> ()
 
 fileprivate enum MidiVoices: UInt8 {
 	case noteOff = 0x80
@@ -36,24 +37,26 @@ class FixaMidiHooks {
 	private var midiConfigs: NamedFixableConfigs = [:]
 	private var listenForTrigger: FixableMidiBinding? = nil
 	
+	private var deviceChangeCallback: FixaMidiHandleDeviceChange? = nil
 	private var messageCallback: FixaMidiApplyMessage? = nil
 	
 	init() {
 		// Setup CoreMIDI
 		midiClient = 0
+		midiInputPort = 0
+		
 		_ = withUnsafeMutablePointer(to: &midiClient) { client in
 			MIDIClientCreateWithBlock("Fixa MIDI Hook" as CFString, client) { notificationPtr in
 				let notification = notificationPtr.pointee
 				switch notification.messageID {
-					case .msgObjectAdded: print("Added MIDI device")			// $ handle
-					case .msgObjectRemoved: print("Removed MIDI device")	// $ handle
+					case .msgObjectAdded: self.deviceChangeCallback?()
+					case .msgObjectRemoved: self.deviceChangeCallback?()
 					default: return
 				}
 			}
 		}
 		
 		// Listen to and dispatch MIDI messages
-		midiInputPort = 0
 		_ = withUnsafeMutablePointer(to: &midiInputPort, { port in
 			MIDIInputPortCreateWithBlock(midiClient, "Fixa Midi input port" as CFString, port) { (packets, connRefCon) in
 				for packet in packets.unsafeSequence() {
@@ -72,6 +75,10 @@ class FixaMidiHooks {
 		makeBinding(number: 1, voice: .control, binding: .stepper(FixableId("angle")))
 		makeBinding(number: 9, voice: .control, binding: .stepper(FixableId("size")))
 		makeBinding(number: 21, voice: .noteOn, binding: .hold(FixableId("open")))
+	}
+	
+	func start() {
+		deviceChangeCallback?()
 	}
 	
 	func midiIsAvailable() -> Bool {
@@ -98,6 +105,10 @@ class FixaMidiHooks {
 		let err = MIDIPortConnectSource(midiInputPort, source, &source)
 		applyConfigs(configs)
 		return err == noErr
+	}
+	
+	func handleMidiDevice(_ callback: @escaping FixaMidiHandleDeviceChange) {
+		deviceChangeCallback = callback
 	}
 	
 	func applyMidiMessage(_ callback: @escaping FixaMidiApplyMessage) {

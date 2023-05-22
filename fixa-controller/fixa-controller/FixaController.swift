@@ -168,15 +168,24 @@ class FixaController: FixaProtocolDelegate {
 	
 	func connectMidi() {
 		midiClient = FixaMidiHooks()
+		
+		midiClient!.handleMidiDevice {
+			let devices = self.midiClient!.midiDevices()
+			self.clientState.externalControllers = devices.map { $0.0 }
+		}
+		
+		midiClient!.applyMidiMessage { (target, midiSetValue) in
+			DispatchQueue.main.sync {
+				self.clientState.fixableValues[target] = midiSetValue
+				self.clientState.controllerValueChanged.send([target])
+			}
+		}
+		
+		midiClient!.start()
+		
 		let midiDevices = midiClient!.midiDevices()
 		if let firstDevice = midiDevices.first {
 			_ = midiClient!.useMidiDevice(name: firstDevice.0, endpoint: firstDevice.1, forConfigs: clientState.fixableConfigs)
-			midiClient!.applyMidiMessage({ [self] (target, midiSetValue) in
-				DispatchQueue.main.sync {
-					clientState.fixableValues[target] = midiSetValue
-					clientState.controllerValueChanged.send([target])
-				}
-			})
 		}
 	}
 }
