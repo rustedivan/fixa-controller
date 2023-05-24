@@ -16,11 +16,16 @@ import fixa
 class ControllerState: ObservableObject {
 	var streamName: String = "Not connected"
 	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
+	var externalControllerChanged = PassthroughSubject<String, Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
 	@Published var fixableConfigs: NamedFixableConfigs
 	@Published var fixableValues: NamedFixableValues {
 		didSet { controllerValueChanged.send(dirtyKeys) }
+	}
+	@Published var externalControllers: [String]
+	@Published var selectedController: String {
+		didSet { externalControllerChanged.send(selectedController) }
 	}
 	var dirtyKeys: [FixableId]
 
@@ -30,6 +35,8 @@ class ControllerState: ObservableObject {
 		fixableConfigs = [:]
 		fixableValues = [:]
 		dirtyKeys = []
+		externalControllers = []
+		selectedController = "" // $ pick from persistence
 	}
 	
 	func fixableBoolBinding(for key: FixableId) -> Binding<Bool> {
@@ -101,6 +108,7 @@ class FixaController: FixaProtocolDelegate {
 	var clientConnection: NWConnection?
 	let clientState: ControllerState
 	var valueChangedStream: AnyCancellable?
+	var externalControllerChangedStream: AnyCancellable?
 	
 	var midiClient: FixaMidiHooks?
 	
@@ -115,6 +123,10 @@ class FixaController: FixaProtocolDelegate {
 				}
 				fixaSendUpdates(dirtyFixables, over: self.clientConnection!)
 				self.clientState.dirtyKeys = []
+			}
+		externalControllerChangedStream = clientState.externalControllerChanged
+			.sink { controllerName in
+				print(controllerName)
 			}
 	}
 	
