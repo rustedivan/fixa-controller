@@ -10,22 +10,6 @@ import SwiftUI
 import Combine
 import fixa
 
-// $ SwiftUI cannot yet create ActivityIndicator
-struct ActivityIndicator: NSViewRepresentable {
-	typealias NSViewType = NSProgressIndicator
-	func makeNSView(context: Context) -> NSProgressIndicator {
-		let view = NSProgressIndicator()
-		view.isIndeterminate = true
-		view.startAnimation(nil)
-		view.style = .spinning
-		view.controlSize = .small
-		return view
-	}
-	
-	func updateNSView(_ nsView: NSProgressIndicator, context: Context) {
-	}
-}
-
 struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
 	var externalControllerSubject = PassthroughSubject<(), Never>()
