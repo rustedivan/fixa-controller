@@ -23,10 +23,15 @@ class ControllerState: ObservableObject {
 	@Published var fixableValues: NamedFixableValues {
 		didSet { controllerValueChanged.send(dirtyKeys) }
 	}
+	
+	// External controller support
 	@Published var externalControllers: [String]
 	@Published var selectedController: String {
 		didSet { externalControllerChanged.send(selectedController) }
 	}
+	@Published var externalControllerBindings: [UInt8 : FixableMidiBinding] = [:]
+	@Published var pendingBind: FixableId?
+	
 	var dirtyKeys: [FixableId]
 
 	init() {
@@ -191,6 +196,11 @@ class FixaController: FixaProtocolDelegate {
 				self.clientState.fixableValues[target] = midiSetValue
 				self.clientState.controllerValueChanged.send([target])
 			}
+		}
+		
+		midiClient!.updateMidiBindings { bindings in
+			self.clientState.externalControllerBindings = bindings
+			self.clientState.pendingBind = nil
 		}
 		
 		midiClient!.start()

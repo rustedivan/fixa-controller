@@ -10,7 +10,7 @@ import Foundation
 import CoreMIDI
 import fixa
 
-fileprivate enum FixableMidiBinding {
+enum FixableMidiBinding {
 	case hold(_ id: FixableId)
 	case toggle(_ id: FixableId, _ on: Bool)
 	case stepper(_ id: FixableId)
@@ -19,6 +19,7 @@ fileprivate enum FixableMidiBinding {
 
 typealias FixaMidiApplyMessage = (FixableId, FixableValue) -> ()
 typealias FixaMidiHandleDeviceChange = () -> ()
+typealias FixaMidiUpdateBindings = ([UInt8 : FixableMidiBinding]) -> ()
 
 fileprivate enum MidiVoices: UInt8 {
 	case noteOff = 0x80
@@ -39,6 +40,7 @@ class FixaMidiHooks {
 	
 	private var deviceChangeCallback: FixaMidiHandleDeviceChange? = nil
 	private var messageCallback: FixaMidiApplyMessage? = nil
+	private var bindingCallback: FixaMidiUpdateBindings? = nil
 	
 	init() {
 		// Setup CoreMIDI
@@ -63,6 +65,7 @@ class FixaMidiHooks {
 					if let listenForTrigger = self.listenForTrigger {
 						if self.bindMessage(packet.pointee, to: listenForTrigger) {
 							self.listenForTrigger = nil
+							self.endBinding()
 						}
 					} else {
 						self.applyPacket(packet.pointee)
@@ -79,6 +82,7 @@ class FixaMidiHooks {
 	
 	func start() {
 		deviceChangeCallback?()
+		bindingCallback?(midiBindings)
 	}
 	
 	func midiIsAvailable() -> Bool {
@@ -111,12 +115,22 @@ class FixaMidiHooks {
 		listenForTrigger = FixableMidiBinding.hold(id)
 	}
 	
+	func endBinding() {
+		DispatchQueue.main.sync {
+			bindingCallback?(midiBindings)
+		}
+	}
+	
 	func handleMidiDevice(_ callback: @escaping FixaMidiHandleDeviceChange) {
 		deviceChangeCallback = callback
 	}
 	
 	func applyMidiMessage(_ callback: @escaping FixaMidiApplyMessage) {
 		messageCallback = callback
+	}
+	
+	func updateMidiBindings(_ callback: @escaping FixaMidiUpdateBindings) {
+		bindingCallback = callback
 	}
 	
 	fileprivate func applyConfigs(_ configs: NamedFixableConfigs) {

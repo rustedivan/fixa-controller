@@ -8,11 +8,14 @@
 
 import SwiftUI
 import Combine
+import fixa
 
 struct ControllerConfigView: View {
 	@ObservedObject var clientState: ControllerState
+	var midiHooks: FixaMidiHooks?
 
 	var body: some View {
+		let orderedControls = Array(clientState.fixableConfigs)
 		HStack {
 			VStack(alignment: .leading) {
 				Text("Available controllers").font(.title)
@@ -22,8 +25,13 @@ struct ControllerConfigView: View {
 					}
 				}.padding(16.0)
 				ForEach(orderedControls, id: \.self.key) { (key, value) in
-					Button(action: { self.startBinding(key) } ) {
-						Text(bindingLabel(value))
+					HStack {
+						Button(action: { self.startBinding(key) } ) {
+							Text(bindingLabel(value))
+						}.disabled(clientState.pendingBind != nil)
+						if clientState.pendingBind == key {
+							ActivityIndicator()
+						}
 					}
 				}
 			}.padding(16.0)
@@ -31,6 +39,7 @@ struct ControllerConfigView: View {
 	}
 	
 	func startBinding(_ key: FixableId) {
+		clientState.pendingBind = key
 		midiHooks?.startBinding(key)
 	}
 	
