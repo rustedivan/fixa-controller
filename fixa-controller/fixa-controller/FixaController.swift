@@ -16,12 +16,22 @@ import fixa
 class ControllerState: ObservableObject {
 	var streamName: String = "Not connected"
 	var controllerValueChanged = PassthroughSubject<[FixableId], Never>()
+	var externalControllerChanged = PassthroughSubject<String, Never>()
 	@Published var connecting: Bool
 	@Published var connected: Bool
 	@Published var fixableConfigs: NamedFixableConfigs
 	@Published var fixableValues: NamedFixableValues {
 		didSet { controllerValueChanged.send(dirtyKeys) }
 	}
+	
+	// External controller support
+	@Published var externalControllers: [String]
+	@Published var selectedController: String {
+		didSet { externalControllerChanged.send(selectedController) }
+	}
+	@Published var externalControllerBindings: [UInt8 : FixableMidiBinding] = [:]
+	@Published var pendingBind: FixableId?
+	
 	var dirtyKeys: [FixableId]
 
 	init() {
@@ -30,6 +40,8 @@ class ControllerState: ObservableObject {
 		fixableConfigs = [:]
 		fixableValues = [:]
 		dirtyKeys = []
+		externalControllers = []
+		selectedController = "" // $ pick from persistence
 	}
 	
 	func fixableBoolBinding(for key: FixableId) -> Binding<Bool> {
@@ -101,6 +113,9 @@ class FixaController: FixaProtocolDelegate {
 	var clientConnection: NWConnection?
 	let clientState: ControllerState
 	var valueChangedStream: AnyCancellable?
+	var externalControllerChangedStream: AnyCancellable?
+	
+	var midiClient: FixaMidiHooks?
 	
 	init(frequency: SendFrequency) {
 		clientState = ControllerState()
@@ -113,6 +128,10 @@ class FixaController: FixaProtocolDelegate {
 				}
 				fixaSendUpdates(dirtyFixables, over: self.clientConnection!)
 				self.clientState.dirtyKeys = []
+			}
+		externalControllerChangedStream = clientState.externalControllerChanged
+			.sink { controllerName in
+				print(controllerName)
 			}
 	}
 	
@@ -153,6 +172,8 @@ class FixaController: FixaProtocolDelegate {
 		clientState.fixableValues = values
 		clientState.connected = true
 		clientState.connecting = false
+		
+		connectMidi()
 	}
 
 	func sessionDidEnd() {
@@ -160,5 +181,33 @@ class FixaController: FixaProtocolDelegate {
 		clientState.connected = false
 		let connectionId = clientConnection!.endpoint.hashValue
 		NotificationCenter.default.post(name: FixaController.DidEndConnection, object: connectionId)
+	}
+	
+	func connectMidi() {
+		midiClient = FixaMidiHooks()
+		
+		midiClient!.handleMidiDevice {
+			let devices = self.midiClient!.midiDevices()
+			self.clientState.externalControllers = devices.map { $0.0 }
+		}
+		
+		midiClient!.applyMidiMessage { (target, midiSetValue) in
+			DispatchQueue.main.sync {
+				self.clientState.fixableValues[target] = midiSetValue
+				self.clientState.controllerValueChanged.send([target])
+			}
+		}
+		
+		midiClient!.updateMidiBindings { bindings in
+			self.clientState.externalControllerBindings = bindings
+			self.clientState.pendingBind = nil
+		}
+		
+		midiClient!.start()
+		
+		let midiDevices = midiClient!.midiDevices()
+		if let firstDevice = midiDevices.first {
+			_ = midiClient!.useMidiDevice(name: firstDevice.0, endpoint: firstDevice.1, forConfigs: clientState.fixableConfigs)
+		}
 	}
 }

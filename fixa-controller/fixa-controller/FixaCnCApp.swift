@@ -14,10 +14,12 @@ import SwiftUI
 import fixa
 
 class FixaCnCApp: NSObject, NSWindowDelegate {
-	var browserWindow: NSWindow!
 	var fixaBrowser = FixaBrowser()
 	var connectSubject: AnyCancellable!
+	var controllerConfigSubject: AnyCancellable!
 
+	var browserWindow: NSWindow?
+	var externalDeviceWindowController: NSWindowController?
 	var controlWindowControllers: [Int : NSWindowController] = [:]
 	var controlClient: FixaController?
 	
@@ -30,7 +32,7 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 			.sink { (browserResult) in
 				self.connectController(to: browserResult)
 			}
-		
+				
 		NotificationCenter.default.addObserver(forName: FixaController.DidEndConnection, object: nil, queue: nil) { (notification) in
 			let connectionId: Int = notification.object as! Int
 			self.closeControlWindow(for: connectionId)
@@ -44,9 +46,20 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		controlClient!.openConnection(to: result.endpoint)
 		
 		let controlWindow = self.makeControlWindow(forView: controlView, appName: result.appName, deviceName: result.deviceName)
+		controllerConfigSubject = controlView.externalControllerSubject
+			.sink {
+				self.openControllerConfigWindow()
+			}
+		
 		
 		let connectionId = result.endpoint!.hashValue
 		controlWindowControllers[connectionId] = NSWindowController(window: controlWindow)
+	}
+	
+	func openControllerConfigWindow() {
+		let externalDeviceConfigView = ControllerConfigView(clientState: controlClient!.clientState, midiHooks: controlClient!.midiClient)
+		let externalDeviceConfigWindow = makeExternalControllerWindow(forView: externalDeviceConfigView)
+		externalDeviceWindowController = NSWindowController(window: externalDeviceConfigWindow)
 	}
 
 	func makeBrowserWindow(forView browser: BrowserView) -> NSWindow {
@@ -75,13 +88,31 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		return window
 	}
 	
+	func makeExternalControllerWindow(forView controllerView: ControllerConfigView) -> NSWindow {
+		// Create the window and set the content view.
+		let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 500),
+													styleMask: [.titled, .miniaturizable, .resizable, .closable, .fullSizeContentView],
+													backing: .buffered, defer: true)
+		window.center()
+		window.title = "External controllers"
+		window.setFrameAutosaveName("Controller Config Window")
+		window.contentView = NSHostingView(rootView: controllerView)
+		window.makeKeyAndOrderFront(nil)
+		window.delegate = self
+		return window
+	}
+	
 	func startBrowsing() {
 		fixaBrowser.startBrowsing()
 	}
 	
 	func windowWillClose(_ notification: Notification) {
-		if controlClient?.clientState.connected == true {
-			controlClient!.hangUp()
+		let closingWindow = notification.object as? NSWindow
+		let closingWindowController = closingWindow?.windowController
+		if controlWindowControllers.contains (where: { closingWindowController == $0.value }) {
+			if controlClient?.clientState.connected == true {
+				controlClient!.hangUp()
+			}
 		}
 	}
 	
