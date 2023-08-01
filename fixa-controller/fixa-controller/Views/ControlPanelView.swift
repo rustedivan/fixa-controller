@@ -10,19 +10,32 @@ import SwiftUI
 import Combine
 import fixa
 
+fileprivate typealias TabControls = (String, [(FixableId, FixableConfig)])
+
 struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
 	var externalControllerSubject = PassthroughSubject<(), Never>()
 	
 	var body: some View {
-		let orderedControls = Array(clientState.fixableConfigs).sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order })
+		let tabs = arrangeTabs(controls: clientState.fixableConfigs)
 		VStack {
 			if clientState.connecting {
 				ActivityIndicator()
 			} else if clientState.connected {
-				ForEach(orderedControls, id: \.self.key) { (key, value) in
-					insertGrouping(key: key, config: value)
+				TabView {
+					ForEach(tabs, id: \.self.0) { (key, value) in
+						VStack {
+							ForEach(value, id: \.self.0) { (fixableId, config) in
+								insertControl(key: fixableId, config: config)
+							}
+						}.tabItem {
+								Label(key, systemImage: "")
+							}
+					}
 				}
+//				ForEach(orderedControls, id: \.self.key) { (key, value) in
+//					insertGrouping(key: key, config: value)
+//				}
 			}
 			Spacer()
 			HStack {
@@ -45,11 +58,7 @@ struct ControlPanelView: View {
 	@ViewBuilder
 	func insertGrouping(key: FixableId, config: FixableConfig) -> some View {
 		switch config {
-			case .divider(let display):
-				Text(display.label)
-					.font(.headline)
-					.padding(.bottom)
-					.frame(maxWidth: .infinity)
+
 			case .group(let contents, let display):
 				GroupBox(label: Text(display.label)) {
 					ForEach(contents, id: \.self.0.hashValue) { (key, value) in
@@ -79,6 +88,11 @@ struct ControlPanelView: View {
 												 label: display.label)
 					.padding(.bottom)
 					.frame(maxWidth: .infinity)
+			case .divider(let display):
+				Text(display.label)
+					.font(.headline)
+					.padding(.bottom)
+					.frame(maxWidth: .infinity)
 			default:
 				Text("Unmapped control: \(key.debugDescription)").font(.callout).foregroundColor(.red)
 		}
@@ -86,6 +100,24 @@ struct ControlPanelView: View {
 	
 	func openControllerConfig() {
 		externalControllerSubject.send(())
+	}
+	
+	fileprivate func arrangeTabs(controls: NamedFixableConfigs) -> [TabControls] {
+		var groupTabs: [TabControls] = []
+		var defaultTab: TabControls = TabControls("General", [])
+		
+		for control in controls {
+			if case let .group(contents, display) = control.value {
+				groupTabs.append((display.label, contents))
+			} else {
+				defaultTab.1.append(control)
+			}
+		}
+		
+		// $ sort all tabs
+		// .sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order
+		
+		return [defaultTab] + groupTabs
 	}
 }
 
