@@ -24,20 +24,18 @@ struct ControlPanelView: View {
 			} else if clientState.connected {
 				TabView {
 					ForEach(tabs, id: \.self.0) { (key, value) in
-						VStack {
-							ForEach(value, id: \.self.0) { (fixableId, config) in
-								insertControl(key: fixableId, config: config)
+							VStack {
+								ForEach(value, id: \.self.0) { (fixableId, config) in
+									insertControl(key: fixableId, config: config)
+								}
 							}
-						}.tabItem {
-								Label(key, systemImage: "")
-							}
-					}
-				}
-//				ForEach(orderedControls, id: \.self.key) { (key, value) in
-//					insertGrouping(key: key, config: value)
-//				}
+							.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+						.tabItem {
+							Text(key)
+						}
+					}.padding(.all)
+				}.padding(.all)
 			}
-			Spacer()
 			HStack {
 				Button(action: { self.clientState.persistTweaks() }) {
 					Text("Store")
@@ -50,9 +48,8 @@ struct ControlPanelView: View {
 						Text("Select controller")
 					}
 				}
-			}
-		}.padding(16.0)
-		 .frame(minWidth: 320.0)
+			}.padding([.top, .bottom], 16.0)
+		}.frame(minWidth: 320.0)
 	}
 	
 	@ViewBuilder
@@ -72,26 +69,27 @@ struct ControlPanelView: View {
 	
 	@ViewBuilder
 	func insertControl(key: FixableId, config: FixableConfig) -> some View {
+		let controlPadding = 8.0
 		switch config {
 			case .bool(let display):
 				FixableToggle(value: self.clientState.fixableBoolBinding(for: key),
 											label: display.label)
-									.padding(.bottom)
+									.padding(.bottom, controlPadding)
 									.frame(maxWidth: .infinity)
 			case .float(let min, let max, let display):
 				FixableSlider(value: self.clientState.fixableFloatBinding(for: key),
 											label: display.label, min: min, max: max)
-					.padding(.bottom)
+					.padding(.bottom, controlPadding)
 					.frame(maxWidth: .infinity)
 			case .color(let display):
 				FixableColorWell(value: self.clientState.fixableColorBinding(for: key),
 												 label: display.label)
-					.padding(.bottom)
+					.padding(.bottom, controlPadding)
 					.frame(maxWidth: .infinity)
 			case .divider(let display):
 				Text(display.label)
 					.font(.headline)
-					.padding(.bottom)
+					.padding(.bottom, controlPadding)
 					.frame(maxWidth: .infinity)
 			default:
 				Text("Unmapped control: \(key.debugDescription)").font(.callout).foregroundColor(.red)
@@ -114,10 +112,16 @@ struct ControlPanelView: View {
 			}
 		}
 		
-		// $ sort all tabs
-		// .sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order
-		
-		return [defaultTab] + groupTabs
+		var allTabs: [TabControls] = []
+		if defaultTab.1.count > 0 {
+			let sortedTab = TabControls(defaultTab.0, defaultTab.1.sorted(by: { (lhs, rhs) in lhs.1.order < rhs.1.order }))
+			allTabs.append(sortedTab)
+		}
+		for tab in groupTabs {
+			let sortedTab = TabControls(tab.0, tab.1.sorted(by: { (lhs, rhs) in lhs.1.order < rhs.1.order }))
+			allTabs.append(sortedTab)
+		}
+		return allTabs
 	}
 }
 
