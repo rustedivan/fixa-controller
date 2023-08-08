@@ -79,6 +79,7 @@ class FixaCnCApp: NSObject, NSWindowDelegate {
 		let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 500),
 													styleMask: [.titled, .miniaturizable, .resizable, .closable, .fullSizeContentView],
 													backing: .buffered, defer: true)
+		window.minSize = CGSize(width: 480.0, height: 500.0)
 		window.center()
 		window.title = "\(appName) on \(deviceName)"
 		window.setFrameAutosaveName("Control Window")

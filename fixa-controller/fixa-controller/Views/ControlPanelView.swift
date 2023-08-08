@@ -10,46 +10,52 @@ import SwiftUI
 import Combine
 import fixa
 
+fileprivate typealias TabControls = (String, [(FixableId, FixableConfig)])
+
 struct ControlPanelView: View {
 	@ObservedObject var clientState: ControllerState
 	var externalControllerSubject = PassthroughSubject<(), Never>()
 	
 	var body: some View {
-		let orderedControls = Array(clientState.fixableConfigs).sorted(by: { (lhs, rhs) in lhs.value.order < rhs.value.order })
+		let tabs = arrangeTabs(controls: clientState.fixableConfigs)
 		VStack {
 			if clientState.connecting {
 				ActivityIndicator()
 			} else if clientState.connected {
-				ForEach(orderedControls, id: \.self.key) { (key, value) in
-					insertGrouping(key: key, config: value)
-				}
-			}
-			Spacer()
-			HStack {
-				Button(action: { self.clientState.persistTweaks() }) {
-					Text("Store")
-				}
-				Button(action: { self.clientState.restoreTweaks() }) {
-					Text("Restore")
-				}
-				if clientState.externalControllers.isEmpty == false {
-					Button(action: { self.openControllerConfig() } ) {
-						Text("Select controller")
+				TabView {
+					ForEach(tabs, id: \.self.0) { (key, value) in
+						VStack {
+							ForEach(value, id: \.self.0) { (fixableId, config) in
+								insertControl(key: fixableId, config: config)
+							}
+						}
+						.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+						.tabItem {
+							Text(key)
+						}
+					}.padding(.all)
+				}.padding(.all)
+				HStack {
+					Button(action: { self.clientState.persistTweaks() }) {
+						Text("Store")
 					}
-				}
+					Button(action: { self.clientState.restoreTweaks() }) {
+						Text("Restore")
+					}
+					if clientState.externalControllers.isEmpty == false {
+						Button(action: { self.openControllerConfig() } ) {
+							Text("Select controller")
+						}
+					}
+				}.padding([.top, .bottom], 16.0)
 			}
-		}.padding(16.0)
-		 .frame(minWidth: 320.0)
+		}.frame(maxWidth: .infinity, maxHeight: .infinity)
 	}
 	
 	@ViewBuilder
 	func insertGrouping(key: FixableId, config: FixableConfig) -> some View {
 		switch config {
-			case .divider(let display):
-				Text(display.label)
-					.font(.headline)
-					.padding(.bottom)
-					.frame(maxWidth: .infinity)
+
 			case .group(let contents, let display):
 				GroupBox(label: Text(display.label)) {
 					ForEach(contents, id: \.self.0.hashValue) { (key, value) in
@@ -63,21 +69,27 @@ struct ControlPanelView: View {
 	
 	@ViewBuilder
 	func insertControl(key: FixableId, config: FixableConfig) -> some View {
+		let controlPadding = 8.0
 		switch config {
 			case .bool(let display):
 				FixableToggle(value: self.clientState.fixableBoolBinding(for: key),
 											label: display.label)
-									.padding(.bottom)
+									.padding(.bottom, controlPadding)
 									.frame(maxWidth: .infinity)
 			case .float(let min, let max, let display):
 				FixableSlider(value: self.clientState.fixableFloatBinding(for: key),
 											label: display.label, min: min, max: max)
-					.padding(.bottom)
+					.padding(.bottom, controlPadding)
 					.frame(maxWidth: .infinity)
 			case .color(let display):
 				FixableColorWell(value: self.clientState.fixableColorBinding(for: key),
 												 label: display.label)
-					.padding(.bottom)
+					.padding(.bottom, controlPadding)
+					.frame(maxWidth: .infinity)
+			case .divider(let display):
+				Text(display.label)
+					.font(.headline)
+					.padding(.bottom, controlPadding)
 					.frame(maxWidth: .infinity)
 			default:
 				Text("Unmapped control: \(key.debugDescription)").font(.callout).foregroundColor(.red)
@@ -86,6 +98,30 @@ struct ControlPanelView: View {
 	
 	func openControllerConfig() {
 		externalControllerSubject.send(())
+	}
+	
+	fileprivate func arrangeTabs(controls: NamedFixableConfigs) -> [TabControls] {
+		var groupTabs: [TabControls] = []
+		var defaultTab: TabControls = TabControls("General", [])
+		
+		for control in controls {
+			if case let .group(contents, display) = control.value {
+				groupTabs.append((display.label, contents))
+			} else {
+				defaultTab.1.append(control)
+			}
+		}
+		
+		var allTabs: [TabControls] = []
+		if defaultTab.1.count > 0 {
+			let sortedTab = TabControls(defaultTab.0, defaultTab.1.sorted(by: { (lhs, rhs) in lhs.1.order < rhs.1.order }))
+			allTabs.append(sortedTab)
+		}
+		for tab in groupTabs {
+			let sortedTab = TabControls(tab.0, tab.1.sorted(by: { (lhs, rhs) in lhs.1.order < rhs.1.order }))
+			allTabs.append(sortedTab)
+		}
+		return allTabs
 	}
 }
 
