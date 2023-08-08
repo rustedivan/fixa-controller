@@ -24,32 +24,32 @@ struct ControlPanelView: View {
 			} else if clientState.connected {
 				TabView {
 					ForEach(tabs, id: \.self.0) { (key, value) in
-							VStack {
-								ForEach(value, id: \.self.0) { (fixableId, config) in
-									insertControl(key: fixableId, config: config)
-								}
+						VStack {
+							ForEach(value, id: \.self.0) { (fixableId, config) in
+								insertControl(key: fixableId, config: config)
 							}
-							.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+						}
+						.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 						.tabItem {
 							Text(key)
 						}
 					}.padding(.all)
 				}.padding(.all)
-			}
-			HStack {
-				Button(action: { self.clientState.persistTweaks() }) {
-					Text("Store")
-				}
-				Button(action: { self.clientState.restoreTweaks() }) {
-					Text("Restore")
-				}
-				if clientState.externalControllers.isEmpty == false {
-					Button(action: { self.openControllerConfig() } ) {
-						Text("Select controller")
+				HStack {
+					Button(action: { self.clientState.persistTweaks() }) {
+						Text("Store")
 					}
-				}
-			}.padding([.top, .bottom], 16.0)
-		}.frame(minWidth: 320.0)
+					Button(action: { self.clientState.restoreTweaks() }) {
+						Text("Restore")
+					}
+					if clientState.externalControllers.isEmpty == false {
+						Button(action: { self.openControllerConfig() } ) {
+							Text("Select controller")
+						}
+					}
+				}.padding([.top, .bottom], 16.0)
+			}
+		}.frame(maxWidth: .infinity, maxHeight: .infinity)
 	}
 	
 	@ViewBuilder
